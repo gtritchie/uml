@@ -1,0 +1,104 @@
+@startuml
+package Session {
+    class Job {
+        +id : string
+        +name : string
+        +status : string
+        +group : string
+        +progress : int
+        +max : int
+        +state : JobState
+        +autoRemove : bool
+        +actions : SEXP
+        +show : bool
+        +toJson() : json::Object
+        {static} +fromJson()
+        +addOutput(string)
+    }
+
+    class JobsApi {
+        {static} -jobs : map<string, Job>
+        {static} -notifyClient()
+        {static} +addJob() : Job
+        {static} +jobsAsJson() : json::Object;
+    }
+
+    class ScriptJob {
+        {static} -scripts : vector<ScriptJob>;
+        {static} +startScriptJob(ScriptLaunchSpec) : string
+        {static} +stopScriptJob(string)
+    }
+
+    class AsyncRProcess {
+
+    }
+
+    class SessionJobs {
+        {static} jobState() : json::Object
+        {static} isSuspendable() : bool
+        {static} onResume()
+        {static} rpc_get_jobs() : json::Object
+        {static} rpc_job_output() : json::Array
+        {static} rpc_set_job_listening()
+        {static} rpc_run_script_job()
+        {static} rpc_clear_jobs()
+        {static} rpc_execute_job_action()
+
+    }
+
+    class SessionJobs.R {
+        {static} rs.api.addJob()
+        {static} rs.api.removeJob()
+        {static} rs.api.setJobProgress()
+        {static} rs.api.addJobProgress()
+        {static} rs.api.setJobStatus()
+        {static} rs.api.setJobState()
+        {static} rs.api.addJobOutput()
+        {static} rs.api.runScriptJob()
+        {static} rs.api.executeJobAction()
+        {static} rs.api.stopJob()
+        {static} rs.api.getJobs()
+    }
+
+    class SourceWithProgress {
+        {static} -emitProgress()
+        {static} +sourceWithProgress()
+    }
+
+    class SessionClientInit {
+        +job_state : string
+    }
+}
+
+package GwtClient {
+    class Client {
+    }
+}
+
+AsyncRProcess <|-- ScriptJob
+ScriptJob ..> JobsApi
+ScriptJob --> Job
+ScriptJob ..> SessionJobs.R
+JobsApi *-- "0..*" Job
+SessionJobs ..> JobsApi
+SessionJobs ..> Client : clientevent.job_refresh
+SessionClientInit ..> SessionJobs
+JobsApi ..> Client : clientevent.job_updated
+Client ..> SessionJobs
+Client ..> SessionClientInit
+Job ..> Client : clientevent.job_output
+SessionJobs.R ..> SessionJobs
+ScriptJob ..> SourceWithProgress
+
+@enduml
+
+@startuml
+header
+Foo
+endheader
+participant Client
+participant Job
+participant JobsApi
+participant SessionJobs
+participant ScriptJob
+@enduml
