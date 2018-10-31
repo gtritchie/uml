@@ -102,31 +102,60 @@ JobProgressPresenter.Display <|-- JobProgress
 JobProgressPresenter --> JobProgressPresenter.Display
 
 class JobState<< JsObject >> {
-   +getJob()
-   +updateJob()
-   +addJob()
-   +removeJob()
-   +recordReceived()
+    +getJob()
+    +updateJob()
+    +addJob()
+    +removeJob()
+    +recordReceived()
 }
 
 JobManager --> JobState
 JobState "1" *-- "many" Job : contains
 
 class JobsList<< Composite >> {
-   -jobs : map<String, JobItem>
-   +addJob()
-   +removeJob()
-   +updateJob()
+    -jobs : map<String, JobItem>
+    +addJob()
+    +removeJob()
+    +updateJob()
 }
 
 class JobItem<< Composite >> {
-   +update()
-   +getJob()
-   +syncTime()
+    +update()
+    +getJob()
+    +syncTime()
 }
 
 JobItem --> "1" Job : displays
 JobsList "1" --> "many" JobItem : displays
 
+class JobOutput<< JavaScriptObject >> {
+    +type
+    +output
+}
+
+class RPC {
+    +set_job_listening()
+    +execute_job_action()
+    +run_script_job()
+    +clear_jobs()
+    +get_jobs()
+    +job_output()
+}
+
+JobsPresenter ..> RPC : set_job_listening
+JobManager ..> RPC : execute_job_action
+JobManager ..> RPC : start_job
+JobManager ..> RPC : clear_jobs
+
+class ClientEvents {
+    +job_updated()
+    +job_refresh()
+    +job_output()
+}
+
+ClientEvents ..> JobManager : onJobUpdated
+ClientEvents ..> JobsPresenter : onJobUpdated
+ClientEvents ..> JobManager : onJobRefresh
+ClientEvents ..> JobsPresenter : onJobOutput
 @enduml
 
