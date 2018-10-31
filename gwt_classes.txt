@@ -1,0 +1,16 @@
+@startuml
+header
+Client Classes
+endheader
+
+class JobManager {
+}
+
+class JobsTab<< JobsPresenter >> {
+}
+
+class JobProgressPresenter {
+}
+
+@enduml
+
