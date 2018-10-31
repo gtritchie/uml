@@ -3,14 +3,130 @@ header
 Client Classes
 endheader
 
-class JobManager {
+class Job<< Javascript >> {
+    +id : string
+    +name: string
+    +status: string
+    +state: int
+    +progress: int
+    +max: int
+    +recorded: int
+    +started: int
+    +completed: int
+    +elapsed: int
+    +received: int
+    +actions : JsArrayString
+    +show: boolean
 }
 
-class JobsTab<< JobsPresenter >> {
+class JobManager<< Singleton >> {
+    -state : JobState
+    ~onSessionInit()
+    ~onJobRefresh()
+    ~onJobUpdated()
+    ~onJobRunScript()
+    ~onJobExecuteAction()
+    ~onStartJob()
+    ~onClearJobs()
 }
 
+class LocalJobProgress {
+    +name : string
+    +units : int
+    +max : int
+    +elapsed : int
+    +received : int
+}
+
+DelayLoadWorkbenchTab<< JobsPresenter >>
+class JobsTab
+DelayLoadWorkbenchTab <|-- JobsTab
+DelayLoadWorkbenchTab --> JobsPresenter
 class JobProgressPresenter {
+   ~onJobElapsedTick()
 }
+
+class JobProgress<< Composite >> {
+    +showProgress(LocalJobProgress)
+    +updateElapsedTime()
+    +setComplete()
+}
+
+JobProgress --> "1" LocalJobProgress : contains
+
+class JobsPresenter {
+   ~onJobUpdated()
+   ~onJobInit()
+   ~onJobOutput()
+   ~onJobSelection()
+   ~onJobElapsedTick()
+}
+
+interface JobsPresenter.Display {
+    +updateJob()
+    +setInitialJobs()
+    +showJobOutput()
+    +addJobOutput()
+    +hideJobOutput()
+    +syncElapsedTime()
+}
+
+JobsPresenter --> JobsPresenter.Display
+
+class JobOutputPanel<< Composite >> {
+}
+
+class ConsolePane<< WorkbenchPane >> {
+}
+
+ConsolePane --> "1" JobProgressPresenter : contains
+
+class JobsPane<< WorkbenchPane >> {
+
+}
+
+JobsPane --> "1" JobOutputPanel : contains
+JobsPane --> "1" JobsList : contains
+JobsPane --> "1" JobProgress : contains
+
+JobsPresenter.Display <|-- JobsPane
+
+interface JobProgressPresenter.Display {
+    + updateElapsed()
+    + showProgress()
+    + setComplete()
+}
+
+JobProgressPresenter.Display <|-- JobProgress
+
+JobProgressPresenter --> JobProgressPresenter.Display
+
+class JobState<< JsObject >> {
+   +getJob()
+   +updateJob()
+   +addJob()
+   +removeJob()
+   +recordReceived()
+}
+
+JobManager --> JobState
+JobState "1" *-- "many" Job : contains
+
+class JobsList<< Composite >> {
+   -jobs : map<String, JobItem>
+   +addJob()
+   +removeJob()
+   +updateJob()
+}
+
+class JobItem<< Composite >> {
+   +update()
+   +getJob()
+   +syncTime()
+}
+
+JobItem --> "1" Job : displays
+JobsList "1" --> "many" JobItem : displays
 
 @enduml
 
