@@ -8,6 +8,7 @@ class Job<< Javascript >> {
     +name: string
     +status: string
     +state: int
+    +type: int
     +progress: int
     +max: int
     +recorded: int
@@ -157,5 +158,23 @@ ClientEvents ..> JobManager : onJobUpdated
 ClientEvents ..> JobsPresenter : onJobUpdated
 ClientEvents ..> JobManager : onJobRefresh
 ClientEvents ..> JobsPresenter : onJobOutput
+
+class JobLauncherDialog<< ModalDialog >> {
+}
+
+class JobLauncherControls<< Composite >>
+
+class JobLaunchSpec<< JavaScriptObject >>{
+    +path : string
+    +encoding : string
+    +workingDir : string
+    +importEnv : boolean
+    +exportEnv : boolean
+}
+
+JobLauncherDialog --> "1" JobLauncherControls : displays
+JobLauncherDialog --> JobLaunchSpec : creates
+JobManager --> JobLauncherDialog
+
 @enduml
 

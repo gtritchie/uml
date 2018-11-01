@@ -9,6 +9,7 @@ package Session {
         +progress : int
         +max : int
         +state : JobState
+        +type : JobType
         +autoRemove : bool
         +actions : SEXP
         +show : bool
