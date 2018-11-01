@@ -110,7 +110,7 @@ class JobState<< JsObject >> {
     +recordReceived()
 }
 
-JobManager --> JobState
+JobManager o-- JobState
 JobState "1" *-- "many" Job : contains
 
 class JobsList<< Composite >> {
@@ -134,19 +134,20 @@ class JobOutput<< JavaScriptObject >> {
     +output
 }
 
-class RPC {
+class JobsRPC {
     +set_job_listening()
     +execute_job_action()
     +run_script_job()
     +clear_jobs()
     +get_jobs()
     +job_output()
+    +adhoc_jobs_enabled()
 }
 
-JobsPresenter ..> RPC : set_job_listening
-JobManager ..> RPC : execute_job_action
-JobManager ..> RPC : start_job
-JobManager ..> RPC : clear_jobs
+JobsPresenter ..> JobsRPC : set_job_listening
+JobManager ..> JobsRPC : execute_job_action
+JobManager ..> JobsRPC : start_job
+JobManager ..> JobsRPC : clear_jobs
 
 class ClientEvents {
     +job_updated()
@@ -176,5 +177,10 @@ JobLauncherDialog --> "1" JobLauncherControls : displays
 JobLauncherDialog --> JobLaunchSpec : creates
 JobManager --> JobLauncherDialog
 
+class AdhocJobManager #LightGreen {
+}
+
+JobManager o-- AdhocJobManager
+AdhocJobManager ..> JobsRPC : adhoc_jobs_enabled
 @enduml
 
