@@ -141,7 +141,7 @@ class JobsRPC {
     +clear_jobs()
     +get_jobs()
     +job_output()
-    +adhoc_jobs_enabled()
+    +launcher_jobs_enabled()
 }
 
 JobsPresenter ..> JobsRPC : set_job_listening
@@ -177,10 +177,10 @@ JobLauncherDialog --> "1" JobLauncherControls : displays
 JobLauncherDialog --> JobLaunchSpec : creates
 JobManager --> JobLauncherDialog
 
-class AdhocJobManager #LightGreen {
+class LauncherJobManager #LightGreen {
 }
 
-JobManager o-- AdhocJobManager
-AdhocJobManager ..> JobsRPC : adhoc_jobs_enabled
+JobManager o-- LauncherJobManager
+LauncherJobManager ..> JobsRPC : launcher_jobs_enabled
 @enduml
 

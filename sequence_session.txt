@@ -3,9 +3,11 @@
 header
 Server-Driven Jobs Interaction
 endheader
+
 box "Session"
 participant RSession
 participant ScriptJob
+participant JobLauncher
 participant JobsApi
 participant SessionJobs
 participant Job
@@ -21,17 +23,17 @@ end box
 ScriptJob -> JobsApi
 JobsApi -> Dispatch : job_updated\n\t(ADD/REMOVE/UPDATED)
 Dispatch -> JobsTab : onJobsUpdated
-JobsTab -> JobsPresenter.Display : updateJob
+JobsTab -> JobsPane : updateJob
 Dispatch -> JobManager : onJobsUpdated
 RSession -> SessionJobs : onResume
 SessionJobs -> Dispatch : job_refresh
 Dispatch -> JobManager : onJobRefresh
 JobManager -> JobsTab : jobInitEvent
-JobsTab -> JobsPresenter.Display : setInitialJobs
+JobsTab -> JobsPane: setInitialJobs
 ScriptJob -> Job : addOutput
 SessionJobs -> Job : addOutput
 Job -> Dispatch : job_output
 Dispatch -> JobsTab : onJobOutput
-JobsTab -> JobsPresenter.Display : addJobOutput
+JobsTab -> JobsPane : addJobOutput
 
 @enduml
