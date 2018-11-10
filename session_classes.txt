@@ -12,6 +12,7 @@ class Job {
     +autoRemove : bool
     +actions : SEXP
     +show : bool
+    +tags : [strings]
     +toJson() : json::Object
     {static} +fromJson()
     +addOutput(string)
@@ -71,6 +72,12 @@ class SessionClientInit {
 
 class GwtClient #lightblue {
 }
+
+class JobLauncher #lightgreen {
+
+}
+
+JobLauncher ..> JobsApi
 
 AsyncRProcess <|-- ScriptJob
 ScriptJob ..> JobsApi

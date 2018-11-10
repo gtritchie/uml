@@ -18,6 +18,7 @@ class Job<< Javascript >> {
     +received: int
     +actions : JsArrayString
     +show: boolean
+    +tags: [string]
 }
 
 class JobManager<< Singleton >> {
