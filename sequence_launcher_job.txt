@@ -1,16 +1,33 @@
 @startuml
 
 header
-Start Session Job
+Start Launcher Job
 endheader
 
 box "Gwt"
-    participant JobManager
-    participant JobLauncherDialog
+    participant Commands
+    participant LauncherJobManagerPro
+    participant JobLauncherDialogPro
     participant ClientEvents
 end box
 
-box "Session"
+box "launcher.js"
+    participant LauncherUIPro
+end box
+
+box "RServer"
+    participant ServerJobLauncherRpc
+endbox
+
+box "Job Launcher"
+    participant REST
+endbox
+
+box "Job"
+
+endbox
+
+box "RSession"
     participant SessionJobs
     participant ScriptJob << AsyncRProcess >>
     participant RProcess
@@ -18,12 +35,22 @@ box "Session"
     participant Job
 endbox
 
-JobManager -> JobLauncherDialog : shows
-activate JobLauncherDialog
-JobLauncherDialog -> JobManager : JobLaunchSpec
-deactivate JobLauncherDialog
+Commands -> LauncherJobManagerPro : onLauncherJobRunScript
+Commands -> LauncherJobManagerPro : (or) onLauncherJobRunSelection
+LauncherJobManagerPro -> JobLauncherDialogPro : shows
+activate JobLauncherDialogPro
+JobLauncherDialogPro -> LauncherUIPro : load and embed
+activate LauncherUIPro
+LauncherUIPro -> REST : get_info
+REST -> LauncherUIPro : cluster info
+LauncherUIPro -> JobLauncherDialogPro : launcher settings
+deactivate LauncherUIPro
+JobLauncherDialogPro -> LauncherJobManagerPro : LauncherJobPro
+deactivate JobLauncherDialogPro
+LauncherJobManagerPro -> Commands : onActivateJobs (show pane)
 
-JobManager -> SessionJobs : run_script_job
+LauncherJobManagerPro -> ServerJobLauncherRpc : /job_launcher_rpc/submit_job (LauncherJobPro)
+ServerJobLauncherRpc -> REST : submit_job
 SessionJobs -> ScriptJob : startScriptJob
 activate ScriptJob
 
