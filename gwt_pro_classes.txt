@@ -44,7 +44,8 @@ class JobsTab {
 }
 
 class JobsPane {
-
+   - baseImpl: JobsDisplayWorkbenchViewImpl
+   - list: JobsListView
 }
 
 class JobsList {
@@ -79,6 +80,9 @@ JobsListView <|-- JobsListViewImpl
 JobsListView <|-- JobsList
 JobsList *-- JobsListViewImpl
 
+JobsPane *-- JobsDisplayWorkbenchViewImpl
+JobsPane o-- JobsListView
+
 interface LauncherJobsPresenter::Display #LightGreen
 
 class LauncherJobManager
@@ -98,7 +102,10 @@ class LauncherJobsPresenter #LightGreen {
    - jobEventHandler: JobsPresenterEventHandlersImpl
 }
 
-class LauncherJobsPane #LightGreen
+class LauncherJobsPane #LightGreen {
+   - baseImpl: JobsDisplayWorkbenchViewImpl
+   - list: JobsListView
+}
 
 class LauncherJobsList #LightGreen {
    - baseImpl: JobsListViewImpl
@@ -118,6 +125,9 @@ LauncherJobsPresenter::Display <|-- LauncherJobsPane
 JobsListView <|-- LauncherJobsList
 LauncherJobsList *-- JobsListViewImpl
 LauncherJobsList o-- LauncherJobManager
+
+LauncherJobsPane *-- JobsDisplayWorkbenchViewImpl
+LauncherJobsPane o-- JobsListView
 
 @enduml
 
