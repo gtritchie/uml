@@ -1,0 +1,105 @@
+@startuml
+header
+Client Classes
+endheader
+
+interface JobsPresenterEventHandlers {
+   + onJobUpdated(JobUpdatedEvent)
+   + onJobInit(JobInitEvent)
+   + onJobOutput(JobOutputEvent)
+   + onJobSelection(JobSelectionEvent)
+   + onJobElapsedTick(JobElapsedTickEvent)
+}
+
+interface JobsDisplayWorkbenchView {
+   + updateJob(updateType, Job)
+   + setInitialJobs(List<Job> jobs)
+   + showJobOutput(jobId, JsArray<JobOutput>)
+   + addJobOutput(jobId, outputType, output)
+   + hideJobOutput(jobId)
+   + syncElapsedTime(timestamp)
+   + setShowTabPref(show)
+}
+
+interface JobsListView {
+   + addJob(Job)
+   + insertJob(Job)
+   + removeJob(Job)
+   + updateJob(Job)
+   + clear()
+   + syncElapsedTime(timestamp)
+   + getJob(String id): Job
+   + jobCount(): int
+}
+
+interface JobsListView
+interface JobsPresenter::Display
+
+class Job
+
+class JobsTab::Shim
+
+class JobsTab {
+   + shim: JobsTab::Shim
+}
+
+class JobsPane {
+
+}
+
+class JobsList {
+   - baseImpl: JobsListViewImpl
+}
+
+class JobsListViewImpl
+class JobsPresenterEventHandlersImpl
+
+class JobsPresenter {
+   + display: JobsPresenter::Display
+   - jobEventHandler: JobsPresenterEventHandlersImpl
+}
+
+JobsPresenterEventHandlers <|-- JobsPresenterEventHandlersImpl
+
+JobsPresenterEventHandlers <|-- JobsTab::Shim
+JobsPresenterEventHandlers <|-- JobsPresenter
+JobsTab o-- JobsTab::Shim
+JobsTab::Shim o-- JobsPresenter
+JobsPresenter o-- JobsPresenter::Display
+JobsPresenter *-- JobsPresenterEventHandlersImpl
+
+JobsDisplayWorkbenchView <|-- JobsPresenter::Display
+JobsPresenter::Display <|-- JobsPane
+
+JobsListView <|-- JobsListViewImpl
+JobsListView <|-- JobsList
+JobsList *-- JobsListViewImpl
+
+interface LauncherJobsPresenter::Display #LightGreen
+
+class LauncherJobManager #LightGreen
+class LauncherJobsTab::Shim #LightGreen
+
+class LauncherJobsTab #LightGreen {
+   + shim: LauncherJobsTab::Shim
+}
+
+class LauncherJobsPresenter #LightGreen {
+   + display: LauncherJobsPresenter::Display
+   - jobEventHandler: JobsPresenterEventHandlersImpl
+}
+
+class LauncherJobsPane #LightGreen
+
+JobsPresenterEventHandlers <|-- LauncherJobsTab::Shim
+JobsPresenterEventHandlers <|-- LauncherJobsPresenter
+LauncherJobsTab o-- LauncherJobsTab::Shim
+LauncherJobsTab::Shim o-- LauncherJobsPresenter
+LauncherJobsPresenter o-- LauncherJobsPresenter::Display
+LauncherJobsPresenter *-- JobsPresenterEventHandlersImpl
+
+JobsDisplayWorkbenchView <|-- LauncherJobsPresenter::Display
+LauncherJobsPresenter::Display <|-- LauncherJobsPane
+
+@enduml
+
