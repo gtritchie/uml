@@ -35,99 +35,65 @@ interface JobsListView {
 interface JobsListView
 interface JobsPresenter::Display
 
-class Job
-
 class JobsTab::Shim
-
-class JobsTab {
-   + shim: JobsTab::Shim
-}
-
-class JobsPane {
-   - baseImpl: JobsDisplayWorkbenchViewImpl
-   - list: JobsListView
-}
-
-class JobsList {
-   - baseImpl: JobsListViewImpl
-}
+class JobsTab
+class JobsPane
+class JobsList
 
 class JobsListViewImpl
 class JobsPresenterEventHandlersImpl
-
-class JobsPresenter {
-   + display: JobsPresenter::Display
-   - jobEventHandler: JobsPresenterEventHandlersImpl
-}
-
+class JobsPresenter
 class JobsDisplayWorkbenchViewImpl
 
-JobsPresenterEventHandlers <|-- JobsPresenterEventHandlersImpl
-
-JobsPresenterEventHandlers <|-- JobsTab::Shim
-JobsPresenterEventHandlers <|-- JobsPresenter
+JobsPresenterEventHandlers <|.. JobsPresenterEventHandlersImpl
+JobsPresenterEventHandlers <|.. JobsTab::Shim
+JobsPresenterEventHandlers <|.. JobsPresenter
 JobsTab o-- JobsTab::Shim
 JobsTab::Shim o-- JobsPresenter
 JobsPresenter o-- JobsPresenter::Display
 JobsPresenter *-- JobsPresenterEventHandlersImpl
 
-JobsDisplayWorkbenchView <|-- JobsPresenter::Display
-JobsDisplayWorkbenchView <|-- JobsDisplayWorkbenchViewImpl
+JobsDisplayWorkbenchView <|.. JobsPresenter::Display
+JobsDisplayWorkbenchView <|.. JobsDisplayWorkbenchViewImpl
 
-JobsPresenter::Display <|-- JobsPane
+JobsPresenter::Display <|.. JobsPane
 
-JobsListView <|-- JobsListViewImpl
-JobsListView <|-- JobsList
+JobsListView <|.. JobsListViewImpl
+JobsListView <|.. JobsList
 JobsList *-- JobsListViewImpl
 
 JobsPane *-- JobsDisplayWorkbenchViewImpl
-JobsPane o-- JobsListView
+JobsPane ..> JobsList : <<create>>
 
 interface LauncherJobsPresenter::Display #LightGreen
 
-class LauncherJobManager
-
-class LauncherJobManagerPro #LightGreen
-
-LauncherJobManager <|-- LauncherJobManagerPro
-
 class LauncherJobsTab::Shim #LightGreen
+class LauncherJobsTab #LightGreen
+class LauncherJobsPresenter #LightGreen
+class LauncherJobsPane #LightGreen
+class LauncherJobsList #LightGreen
 
-class LauncherJobsTab #LightGreen {
-   + shim: LauncherJobsTab::Shim
-}
+JobsPresenter ..> JobsPane : <<create>>
+LauncherJobsPresenter ..> LauncherJobsPane : <<create>>
 
-class LauncherJobsPresenter #LightGreen {
-   + display: LauncherJobsPresenter::Display
-   - jobEventHandler: JobsPresenterEventHandlersImpl
-}
-
-class LauncherJobsPane #LightGreen {
-   - baseImpl: JobsDisplayWorkbenchViewImpl
-   - list: JobsListView
-}
-
-class LauncherJobsList #LightGreen {
-   - baseImpl: JobsListViewImpl
-   - launcherJobManager: LauncherJobManager
-}
-
-JobsPresenterEventHandlers <|-- LauncherJobsTab::Shim
-JobsPresenterEventHandlers <|-- LauncherJobsPresenter
+JobsPresenterEventHandlers <|.. LauncherJobsTab::Shim
+JobsPresenterEventHandlers <|.. LauncherJobsPresenter
 LauncherJobsTab o-- LauncherJobsTab::Shim
 LauncherJobsTab::Shim o-- LauncherJobsPresenter
 LauncherJobsPresenter o-- LauncherJobsPresenter::Display
 LauncherJobsPresenter *-- JobsPresenterEventHandlersImpl
+JobsPresenterEventHandlersImpl ..> JobsDisplayWorkbenchView : <<use>>
 
-JobsDisplayWorkbenchView <|-- LauncherJobsPresenter::Display
-LauncherJobsPresenter::Display <|-- LauncherJobsPane
+JobsDisplayWorkbenchView <|.. LauncherJobsPresenter::Display
+LauncherJobsPresenter::Display <|.. LauncherJobsPane
 
-JobsListView <|-- LauncherJobsList
+JobsListView <|.. LauncherJobsList
 LauncherJobsList *-- JobsListViewImpl
-LauncherJobsList o-- LauncherJobManager
 
 LauncherJobsPane *-- JobsDisplayWorkbenchViewImpl
-LauncherJobsPane o-- JobsListView
+LauncherJobsPane ..> LauncherJobsList : <<create>>
+
+JobsDisplayWorkbenchViewImpl ..> JobsListView : <<use>>
 
 @enduml
 
