@@ -22,14 +22,16 @@ interface JobsDisplay {
 }
 
 interface JobsListView {
-   + addJob(Job)
-   + insertJob(Job)
-   + removeJob(Job)
+   + addJob(Job, Consumer<JobItem>)
+   + insertJob(Job, Consumer<JobItem>)
+   + removeJob(Job, Command)
    + updateJob(Job)
    + clear()
    + syncElapsedTime(timestamp)
    + getJob(String id): Job
    + jobCount(): int
+   + getJobs(): List<Job>
+   + setInitialJobs(List<Job>)
 }
 
 interface JobsPaneOperations {
@@ -43,6 +45,7 @@ interface JobsPaneOperations {
    + updateProgress(int timestamp)
    + showProgress(Job job)
    + addJob(Job job)
+   + setInitialJobs(List<Job> jobs)
    + insertJob(Job job)
    + removeJob(Job job)
    + updateJob(Job job)
@@ -55,7 +58,6 @@ interface JobsPaneOperations {
 
 interface JobsListView
 interface JobsPresenter::Display
-
 
 class JobsTab::Shim
 class JobsTab
@@ -104,6 +106,7 @@ class LauncherJobsPresenter #LightGreen
 class LauncherJobsPane #LightGreen
 class LauncherJobsList #LightBlue
 class LauncherJobsPaneWidgetsPro #LightBlue
+class LauncherJobSortMenu #LightBlue
 
 class LauncherJobManagerPro #LightBlue
 
@@ -137,10 +140,10 @@ LauncherJobsPaneWidgetsPro <.. LauncherJobsList : <<inject>>
 LauncherJobsPaneWidgetsPro ..> JobsListView : <<use>>
 LauncherJobsPaneWidgets <|.. LauncherJobsPaneWidgetsPro
 
-LauncherJobsPresenter .> LauncherJobManager : <<use>>
-LauncherJobsList .> LauncherJobManager : <<use>>
+LauncherJobsPresenter ..> LauncherJobManager : <<use>>
+LauncherJobsList ..> LauncherJobManager : <<use>>
 
-hide members
+LauncherJobsPaneWidgetsPro <.. LauncherJobSortMenu : <<inject>>
 
 @enduml
 
